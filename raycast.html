@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en>">
+  <head>
+    <title>Bob 3JS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script src="./js/three.js"></script>
+    <script type="module">
+      // Find the latest version by visiting https://unpkg.com/three.
+      import * as THREE from "./js/three.module.js";
+      import { OrbitControls } from "./js/OrbitControls.js";
+
+      const canvas = document.querySelector("#c");
+      const scene = new THREE.Scene();
+
+      var renderer,
+        mouse,
+        raycaster,
+        boxmesh,
+        boxmesh2,
+        geometry,
+        boxgeometery,
+        boxgeometery2,
+        mesh,
+        material,
+        camera,
+        controls;
+
+      init();
+      animate();
+
+      function init() {
+        mouse = new THREE.Vector2();
+        raycaster = new THREE.Raycaster();
+
+        var light = new THREE.AmbientLight(0xffffff, 2);
+        scene.add(light);
+
+        //var material = new THREE.MeshLambertMaterial();
+
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.set(0, 20, 200);
+
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        controls = new OrbitControls(camera, renderer.domElement);
+      }
+
+      function boxMaker() {
+        boxgeometery = new THREE.BoxGeometry(20, 20, 20);
+        boxmesh = new THREE.Mesh(boxgeometery);
+        boxmesh.material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+        scene.add(boxmesh);
+      }
+
+      function boxMaker2() {
+        boxgeometery2 = new THREE.BoxGeometry(20, 20, 20);
+        boxmesh2 = new THREE.Mesh(boxgeometery2);
+        boxmesh2.material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+        boxmesh2.position.x = 50;
+        scene.add(boxmesh2);
+      }
+
+      function onMouseMove(event) {
+        event.preventDefault();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      }
+
+      function selectObject() {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(scene.children);
+        for (let i = 0; i < intersects.length; i++) {
+          intersects[i].object.material.color.set(0x00ff00);
+        }
+      }
+
+      function drawPlane() {
+        geometry = new THREE.PlaneGeometry(1000, 1000, 4, 4);
+        mesh = new THREE.Mesh(geometry);
+        mesh.material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+        mesh.rotation.x = (-90 * Math.PI) / 180;
+        mesh.position.y = -10;
+        scene.add(mesh);
+      }
+
+      function animate() {
+        render();
+        requestAnimationFrame(animate);
+      }
+
+      function render() {
+        controls.update();
+
+        boxMaker2();
+        boxMaker();
+        drawPlane();
+        selectObject();
+        //console.info(material);
+        renderer.render(scene, camera);
+      }
+      window.addEventListener("wheel", onMouseMove, false);
+    </script>
+    <!--<script src="./js/main.js"></script>-->
+  </body>
+</html>

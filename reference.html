@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en>">
+  <head>
+    <title>Bob 3JS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // Find the latest version by visiting https://unpkg.com/three.
+      import * as THREE from "https://unpkg.com/three@0.126.1/build/three.module.js";
+
+      let scene, camera, renderer, sphere, geometry, texture, material;
+      let cube, cutexture, cugeometry, cumaterial;
+      let heartShape, hstexture, hsgeometry, hsmaterial, mesh;
+      let cone, conegeometry, conematerial, conetexture;
+      let text, fontgeometery, fontmaterial, fonttexture;
+      let plain, plaingeometry, plainmaterial;
+
+      function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var light = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(light);
+        var light1 = new THREE.PointLight(0xffffff, 0.6);
+        scene.add(light1);
+
+        //sphere shape
+        geometry = new THREE.SphereGeometry(1, 64, 64);
+        texture = new THREE.TextureLoader().load(
+          "../images/weatherbackground.jpg"
+        );
+        material = new THREE.MeshLambertMaterial({ map: texture });
+        sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        //cube shape
+        cugeometry = new THREE.BoxGeometry(2, 2, 2);
+        cutexture = new THREE.TextureLoader().load("../images/bobbox.jpg");
+        cumaterial = new THREE.MeshLambertMaterial({ map: cutexture });
+        cube = new THREE.Mesh(cugeometry, cumaterial);
+        cube.position.set(2, 2, -1);
+        scene.add(cube);
+
+        //add plain
+        plaingeometry = new THREE.PlaneGeometry(20, 20);
+        plainmaterial = new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+          //side: THREE.FrontSide,
+          wireframe: false,
+        });
+        plain = new THREE.Mesh(plaingeometry, plainmaterial);
+        plain.rotation.z = 20;
+        plain.rotation.y = 5;
+        scene.add(plain);
+
+        /*sphere.addEventListener("click", function () {
+          scene = new THREE.Scene();
+          cugeometry = new THREE.BoxGeometry(2, 2, 2);
+          cutexture = new THREE.TextureLoader().load("../images/cloudy.jpg");
+          cumaterial = new THREE.MeshBasicMaterial({ map: cutexture });
+          cube = new THREE.Mesh(cugeometry, cumaterial);
+          cube.position.set(2, 2, -1);
+          scene.add(cube);
+        });
+
+        //heart shape
+        /*const x = 0,
+          y = 0;
+        heartShape = new THREE.Shape();
+
+        heartShape.moveTo(x + 5, y + 5);
+        heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+        heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+        heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+        heartShape.bezierCurveTo(
+          x + 12,
+          y + 15.4,
+          x + 16,
+          y + 11,
+          x + 16,
+          y + 7
+        );
+        heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+        heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+
+        hsgeometry = new THREE.ShapeGeometry(heartShape);
+        hsmaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const mesh = new THREE.Mesh(hsgeometry, hsmaterial);
+
+        mesh.position.set(2, -4, -15);
+        scene.add(mesh);
+
+        //cone shape
+        conegeometry = new THREE.ConeGeometry(4, 10, 64);
+        conetexture = new THREE.TextureLoader().load("../images/cloudy.jpg");
+        conematerial = new THREE.MeshBasicMaterial({ map: conetexture });
+        cone = new THREE.Mesh(conegeometry, conematerial);
+        scene.add(cone);
+        cone.position.set(-8, 2, -10);*/
+
+        //fonts and text
+        const loader = new THREE.FontLoader();
+        loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
+          fontgeometery = new THREE.TextGeometry("BOB!", {
+            font: font,
+            size: 10,
+            height: 1,
+            curveSegments: 120,
+            bevelEnabled: true,
+            bevelThickness: 2,
+            bevelSize: 1,
+            bevelOffset: 0,
+            bevelSegments: 2,
+          });
+          fonttexture = new THREE.TextureLoader().load("../images/lords.jpg");
+          fontmaterial = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+          text = new THREE.Mesh(fontgeometery, fontmaterial);
+          text.position.set(-20, 0, -40);
+
+          //light1.position.set(100, 0, 100);
+
+          scene.add(text);
+          text.rotation.x = -0.3;
+        });
+
+        camera.position.z = 5;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        sphere.rotation.x += 0.01;
+        sphere.rotation.y += 0.01;
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        //plain.rotation.y += 0.01;
+        //plain.rotation.x += 0.01;
+        //plain.rotation.z += 0.01;
+        //cone.rotation.x += 0.01;
+        //cone.rotation.y += 0.01;
+      }
+
+      function render() {
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+      }
+
+      function onWIndowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      window.addEventListener("resize", onWIndowResize, false);
+
+      init();
+      animate();
+      render();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.js"></script>
+    <!--<script src="./js/main.js"></script>-->
+  </body>
+</html>

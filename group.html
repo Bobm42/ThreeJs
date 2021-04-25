@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en>">
+  <head>
+    <title>Bob 3JS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script src="./js/three.js"></script>
+    <script type="module">
+      // Find the latest version by visiting https://unpkg.com/three.
+      import * as THREE from "./js/three.module.js";
+
+      const canvas = document.querySelector("#c");
+      const scene = new THREE.Scene();
+      var renderer;
+
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      //renderer.setClearColor(0xffffff);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+      const cubeA = new THREE.Mesh(geometry, material);
+      cubeA.position.set(100, 100, 0);
+
+      const cubeB = new THREE.Mesh(geometry, material);
+      cubeB.position.set(-100, -100, 0);
+
+      //create a group and add the two cubes
+      //These cubes can now be rotated / scaled etc as a group
+      const group = new THREE.Group();
+      group.add(cubeA);
+      group.add(cubeB);
+
+      scene.add(group);
+
+      render();
+
+      var delta = 0;
+      function render() {
+        // delta += 0.01;
+
+        // camera.lookAt(light1.position);
+        // camera.position.x = Math.sin(delta) * 2000;
+        // camera.position.z = Math.cos(delta) * 2000;
+        renderer.render(scene);
+        //shadowMapViewer.render(renderer);
+
+        // spmesh.rotation.x += 0.01;
+        // spmesh.rotation.y += 0.01;
+        // spmesh.rotation.z += 0.01;
+
+        // light1.position.x += 1;
+        // light1.position.y += 1;
+
+        //spmesh.position.z += 0.5;
+
+        // camera.position.x += 0.1;
+        // camera.position.y += 0.1;
+
+        // camera.rotation.z += 0.0001;
+        // camera.rotation.x += 0.0001;
+        // camera.rotation.y += 0.0001;
+
+        //controls.update();
+
+        //requestAnimationFrame(render);
+      }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.js"></script>
+    <!--<script src="./js/main.js"></script>-->
+  </body>
+</html>

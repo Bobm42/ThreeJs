@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en>">
+  <head>
+    <title>Bob 3JS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // Find the latest version by visiting https://unpkg.com/three.
+      import * as THREE from "https://unpkg.com/three@0.126.1/build/three.module.js";
+
+      let scene, camera, renderer, sphere, geometry, texture, material;
+
+      function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+
+        var light = new THREE.AmbientLight(0xffffff, 0.6);
+        light.position.y = 3;
+        light.position.x = 7;
+        light.position.z = 9;
+        scene.add(light);
+        var light1 = new THREE.PointLight(0xffffff, 0.6);
+        light1.position.y = 5;
+        light1.position.x = 5;
+        scene.add(light1);
+
+        //sphere shape
+        geometry = new THREE.SphereGeometry(1, 64, 64);
+        texture = new THREE.TextureLoader().load("../images/cloudy.jpg");
+        material = new THREE.MeshLambertMaterial({ map: texture });
+        sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        window.addEventListener("click", mouseClick);
+
+        function mouseClick(event) {
+          event.preventDefault();
+
+          mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+          mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, camera);
+          var intersects = raycaster.intersectObjects(scene.children, true);
+
+          for (var x = 0; x < intersects.length; x++) {
+            intersects[x].object.material.color.set(0x00ff00);
+          }
+        }
+
+        function mouseClicked() {
+          scene = new THREE.Scene();
+          var sphere2;
+          var light2 = new THREE.AmbientLight(0xffffff, 0.7);
+          light2.position.y = 5;
+          light2.position.x = 5;
+          scene.add(light2);
+
+          var light3 = new THREE.PointLight(0xffffff, 0.7);
+          light3.position.y = 5;
+          light3.position.x = 5;
+          scene.add(light3);
+          geometry = new THREE.SphereGeometry(1, 64, 64);
+          texture = new THREE.TextureLoader().load("../images/bobbookO.jpg");
+          material = new THREE.MeshLambertMaterial({ map: texture });
+          sphere2 = new THREE.Mesh(geometry, material);
+          sphere2.position.set(2, 2, -1);
+          scene.add(sphere2);
+          material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
+          sphere = new THREE.Mesh(geometry, material);
+          sphere.position.set(2, -2, -1);
+          scene.add(sphere);
+          material = new THREE.MeshLambertMaterial({ color: 0x00ffff });
+          sphere = new THREE.Mesh(geometry, material);
+          sphere.position.set(-2, -2, -1);
+          scene.add(sphere);
+          material = new THREE.MeshLambertMaterial({ color: 0xfff000 });
+          sphere = new THREE.Mesh(geometry, material);
+          sphere.position.set(-2, 2, -1);
+          scene.add(sphere);
+          function animate() {
+            requestAnimationFrame(animate);
+
+            sphere2.rotation.x += 0.01;
+            sphere2.rotation.y += 0.01;
+          }
+          animate();
+        }
+
+        camera.position.z = 5;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        sphere.rotation.x += 0.01;
+        sphere.rotation.y += 0.01;
+      }
+
+      function render() {
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+      }
+
+      function onWIndowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      window.addEventListener("resize", onWIndowResize, false);
+
+      init();
+      animate();
+      render();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.js"></script>
+    <!--<script src="./js/main.js"></script>-->
+  </body>
+</html>
